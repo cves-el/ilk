@@ -23,7 +23,7 @@ const AuftragModal = ({ onSave }) => {
 
     return (
         <div>
-            <button onClick={openModal}>Neuen Auftrag erstellen</button>
+            <button onClick={openModal}>Neue Aufgabe erstellen</button>
 
             <Modal
                 isOpen={modalIsOpen}
@@ -34,7 +34,7 @@ const AuftragModal = ({ onSave }) => {
                 <label>
                     Bezeichnung:
                     <input type="text" value={bezeichnung} onChange={(e) => setBezeichnung(e.target.value)} />
-                    
+
                 </label>
                 <button onClick={handleSave}>Speichern</button>
                 <button onClick={closeModal}>Abbrechen</button>
