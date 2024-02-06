@@ -1,10 +1,9 @@
-// AuftragModal.js
-
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 
 const AuftragModal = ({ onSave }) => {
-    const [bezeichnung, setBezeichnung] = useState('');
+    const [auftragName, setAuftragName] = useState('');
+    const [lieferdatum, setLieferdatum] = useState('');
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
     const openModal = () => {
@@ -16,8 +15,9 @@ const AuftragModal = ({ onSave }) => {
     };
 
     const handleSave = () => {
-        onSave(bezeichnung);
-        setBezeichnung('');
+        onSave({ auftragName, lieferdatum });
+        setAuftragName('');
+        setLieferdatum('');
         closeModal();
     };
 
@@ -32,8 +32,12 @@ const AuftragModal = ({ onSave }) => {
             >
                 <h2>Neuen Auftrag erstellen</h2>
                 <label>
-                    Bezeichnung:
-                    <input type="text" value={bezeichnung} onChange={(e) => setBezeichnung(e.target.value)} />
+                    Auftrag Name:
+                    <input type="text" value={auftragName} onChange={(e) => setAuftragName(e.target.value)} />
+                </label>
+                <label>
+                    Lieferdatum:
+                    <input type="date" value={lieferdatum} onChange={(e) => setLieferdatum(e.target.value)} />
                 </label>
                 <button onClick={handleSave}>Speichern</button>
                 <button onClick={closeModal}>Abbrechen</button>
