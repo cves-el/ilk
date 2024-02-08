@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import Modal from 'react-modal';
 
 const AuftragModal = ({ onSave }) => {
@@ -14,33 +15,60 @@ const AuftragModal = ({ onSave }) => {
         setModalIsOpen(false);
     };
 
-    const handleSave = () => {
-        onSave({ auftragName, lieferdatum });
-        setAuftragName('');
-        setLieferdatum('');
-        closeModal();
+    const handleSave = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await axios.post('http://localhost:8081/auftraege/create', {
+                auftrag_name: auftragName,
+                auftrag_liefertermin: lieferdatum
+            });
+
+            console.log(response.data);
+            onSave(); // Aktualisiere die Auftragsliste in der App
+            setAuftragName('');
+            setLieferdatum('');
+            closeModal();
+        } catch (error) {
+            console.error('Fehler beim Speichern des Auftrags:', error);
+        }
     };
 
     return (
         <div>
             <button onClick={openModal}>Neuen Auftrag erstellen</button>
-
             <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
                 contentLabel="Neuen Auftrag erstellen"
+                ariaHideApp={false}
             >
-                <h2>Neuen Auftrag erstellen</h2>
-                <label>
-                    Auftrag Name:
-                    <input type="text" value={auftragName} onChange={(e) => setAuftragName(e.target.value)} />
-                </label>
-                <label>
-                    Lieferdatum:
-                    <input type="date" value={lieferdatum} onChange={(e) => setLieferdatum(e.target.value)} />
-                </label>
-                <button onClick={handleSave}>Speichern</button>
-                <button onClick={closeModal}>Abbrechen</button>
+                <form onSubmit={handleSave}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <div style={{ padding: '2vh' }}>
+                            <label htmlFor="auftragName">Auftrag Name: </label>
+                            <input
+                                type="text"
+                                id="auftragName"
+                                value={auftragName}
+                                onChange={(e) => setAuftragName(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div style={{ padding: '2vh' }}>
+                            <label htmlFor="auftragLiefertermin">Auftrag Liefertermin: </label>
+                            <input
+                                type="date"
+                                id="lieferdatum"
+                                value={lieferdatum}
+                                onChange={(e) => setLieferdatum(e.target.value)}
+                            />
+                        </div>
+                        <button style={{ padding: '2vh', marginBottom: '2vh' }} type="submit">Auftrag erstellen</button>
+                        <button style={{ padding: '2vh' }} onClick={closeModal}>Abbrechen</button>
+                    </div>
+                </form>
+
             </Modal>
         </div>
     );
