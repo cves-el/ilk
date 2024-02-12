@@ -107,30 +107,31 @@ function App() {
               {selectedAuftrag && (
                 <div style={{ padding: '10px', flexDirection: 'row' }}>
                   {aufgaben.map((aufgabe, index) => (
-                    <div key={index} style={{ backgroundColor: '#757575', display: 'flex', marginBottom: '5px', flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <div key={index} style={{ backgroundColor: '#757575', display: 'flex', marginBottom: '5px', padding: '7px', flexDirection: 'row', justifyContent: 'space-between' }}>
                       <div style={{ display: 'flex', marginBottom: '5px', flexDirection: 'column', width: '100%' }}>
-                        <div style={{ display: 'flex', marginBottom: '2vh' }}>
+                        <div style={{ display: 'flex', marginBottom: '2vh', fontSize: '20px' }}>
 
-                          <div style={{ width: '33%', textAlign: 'left' }}><strong>Menge:</strong> {aufgabe.stueck} </div><div>  <strong>Maße: </strong>{aufgabe.hoehe} x {aufgabe.breite} x {aufgabe.laenge} </div>
+                          <div style={{ width: '33%', textAlign: 'left' }}><strong>Menge:</strong> {aufgabe.stueck} </div>
+                          <div>  <strong>Maße: </strong>{aufgabe.hoehe} x {aufgabe.breite} x {aufgabe.laenge} </div>
 
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', fontSize: '14px' }}>
                           <div style={{ display: 'flex' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', width: '33%', textAlign: 'left' }}>
-                              {aufgabe.kammer !== null ? <div>Kammer: {aufgabe.kammer === 1 ? 'Ja' : 'Nein'}</div> : null}
-                              {aufgabe.kapplaenge !== null ? <div>Kapplaenge: {aufgabe.kapplaenge}</div> : null}
+                              {aufgabe.kammer !== null ? <div><strong>Kammer:</strong> {aufgabe.kammer === 1 ? 'Ja' : 'Nein'}</div> : null}
+                              {aufgabe.kapplaenge !== null ? <div><strong>Kapplaenge:</strong>  {aufgabe.kapplaenge}</div> : null}
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', width: '33%', textAlign: 'left' }}>
-                              {aufgabe.lagenbreite !== null ? <div>Lagenbreite: {aufgabe.lagenbreite}</div> : null}
-                              {aufgabe.lagenhoehe !== null ? <div>Lagenhoehe: {aufgabe.lagenhoehe}</div> : null}
+                              {aufgabe.lagenbreite !== null ? <div><strong>Lagenbreite:</strong> {aufgabe.lagenbreite}</div> : null}
+                              {aufgabe.lagenhoehe !== null ? <div><strong>Lagenhöhe:</strong> {aufgabe.lagenhoehe}</div> : null}
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
-                              {aufgabe.ewd_programm !== null ? <div>EWD Programm: {aufgabe.ewd_programm}</div> : null}
-
+                              {aufgabe.ewd_programm !== null ? <div><strong>Seitenware:</strong> {aufgabe.ewd_programm}</div> : null}
+                              {aufgabe.ewd_programm !== null ? <div><strong>EWD Programm:</strong> {aufgabe.ewd_programm}</div> : null}
                             </div>
                           </div>
                           <div style={{ textAlign: 'left', marginTop: '1vh' }}>
-                            {aufgabe.kommentar}
+                            {aufgabe.kommentar !== null ? <div><strong>Kommentar:</strong> {aufgabe.kommentar}</div> : null}
                           </div>
                         </div>
                       </div>
@@ -153,9 +154,7 @@ function App() {
             </div>
           </div>
           <div style={{ width: '20vh', backgroundColor: '#292929' }}>
-            {onlineIPs.map((ip, index) => (
-              <div key={index}>{ip}</div>
-            ))}
+            chat
           </div>
         </div>
         <div style={{ display: 'flex', position: 'absolute', bottom: '0', height: '8%', width: '100%', backgroundColor: '#757575', alignItems: 'center', justifyContent: 'center' }}>

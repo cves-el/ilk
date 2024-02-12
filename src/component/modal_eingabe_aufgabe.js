@@ -39,7 +39,7 @@ const AufgabeModal = ({ auftragId, auftragName, onSave }) => {
                 lagenbreite: lagenbreite,
                 lagenhoehe: lagenhoehe,
                 stueck: stueck,
-                ewd_program: ewdprogramm,
+                ewd_programm: ewdprogramm,
                 kommentar: kommentar
             });
 
