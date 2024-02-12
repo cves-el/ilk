@@ -69,6 +69,8 @@ function App() {
     }
   };
 
+
+
   return (
     <div className="App" style={{ backgroundColor: '#1f1f1f', color: '#ffffff' }}>
       <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
@@ -151,7 +153,9 @@ function App() {
             </div>
           </div>
           <div style={{ width: '20vh', backgroundColor: '#292929' }}>
-            Chat
+            {onlineIPs.map((ip, index) => (
+              <div key={index}>{ip}</div>
+            ))}
           </div>
         </div>
         <div style={{ display: 'flex', position: 'absolute', bottom: '0', height: '8%', width: '100%', backgroundColor: '#757575', alignItems: 'center', justifyContent: 'center' }}>
