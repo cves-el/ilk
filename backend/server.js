@@ -7,9 +7,9 @@ app.use(express.json());
 app.use(cors());
 
 const db = mysql.createConnection({
-    host: "localhost",
+    host: "0.0.0.0",
     user: "root",
-    password: "",
+    password: "WNfTUAG850WBZDzV",
     database: "ilk_volgger"
 });
 
@@ -41,6 +41,18 @@ app.post('/auftraege/create', (req, res) => {
         return res.json({ message: "Auftrag erfolgreich hinzugefügt", ID: result.insertId });
     });
 });
+
+//Aufgabe hinzufügen
+app.post('/auftraege/:id/aufgaben/create', (req, res) => {
+    const auftragId = req.params.id;
+    const { hoehe, breite, laenge, kammer, kapplaenge, lagenbreite, lagenhoehe, stueck, reihenfolge, ewd_programm, kommentar } = req.body;
+    const sql = "INSERT INTO aufgaben (auftrag_id, hoehe, breite, laenge, kammer, kapplaenge, lagenbreite, lagenhoehe, stueck, reihenfolge, ewd_programm, kommentar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    db.query(sql, [auftragId, hoehe, breite, laenge, kammer, kapplaenge, lagenbreite, lagenhoehe, stueck, reihenfolge, ewd_programm, kommentar], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        return res.json({ message: "Aufgabe erfolgreich hinzugefügt", ID: result.insertId });
+    });
+});
+
 
 // Auftrag aktualisieren
 app.put('/auftraege/update/:ID', (req, res) => {

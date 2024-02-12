@@ -19,7 +19,7 @@ const AuftragModal = ({ onSave }) => {
         e.preventDefault();
 
         try {
-            const response = await axios.post('http://localhost:8081/auftraege/create', {
+            const response = await axios.post('http://192.168.1.5:8081/auftraege/create', {
                 auftrag_name: auftragName,
                 auftrag_liefertermin: lieferdatum
             });
