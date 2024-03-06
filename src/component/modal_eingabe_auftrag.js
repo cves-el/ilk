@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Modal from 'react-modal';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
 const AuftragModal = ({ onSave }) => {
     const [auftragName, setAuftragName] = useState('');
@@ -12,6 +13,8 @@ const AuftragModal = ({ onSave }) => {
     };
 
     const closeModal = () => {
+        setAuftragName('');
+        setLieferdatum('');
         setModalIsOpen(false);
     };
 
@@ -36,39 +39,44 @@ const AuftragModal = ({ onSave }) => {
 
     return (
         <div>
-            <button onClick={openModal}>Neuen Auftrag erstellen</button>
+            <Button variant="outline-primary" onClick={openModal}>Neuen Auftrag erstellen</Button>
             <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                contentLabel="Neuen Auftrag erstellen"
-                ariaHideApp={false}
+                show={modalIsOpen}
+                onHide={closeModal}
+
             >
-                <form onSubmit={handleSave}>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <div style={{ padding: '2vh' }}>
-                            <label htmlFor="auftragName">Auftrag Name: </label>
+                <Modal.Header closeButton>
+                    <Modal.Title>Neuen Auftrag erstellen</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <form onSubmit={handleSave}>
+                        <div className="mb-3">
+                            <label htmlFor="auftragName" className="form-label"><strong>Auftrag Name:</strong></label>
                             <input
                                 type="text"
+                                className="form-control"
                                 id="auftragName"
                                 value={auftragName}
                                 onChange={(e) => setAuftragName(e.target.value)}
                                 required
                             />
                         </div>
-                        <div style={{ padding: '2vh' }}>
-                            <label htmlFor="auftragLiefertermin">Auftrag Liefertermin: </label>
+                        <div className="mb-3">
+                            <label htmlFor="auftragLiefertermin" className="form-label"><strong>Auftrag Liefertermin:</strong></label>
                             <input
-                                type="date"
+                                type="datetime-local"
+                                className="form-control"
                                 id="lieferdatum"
                                 value={lieferdatum}
                                 onChange={(e) => setLieferdatum(e.target.value)}
                             />
                         </div>
-                        <button style={{ padding: '2vh', marginBottom: '2vh' }} type="submit">Auftrag erstellen</button>
-                        <button style={{ padding: '2vh' }} onClick={closeModal}>Abbrechen</button>
-                    </div>
-                </form>
-
+                        <div className="d-grid gap-2">
+                            <Button variant="primary" type="submit">Auftrag erstellen</Button>
+                            <Button variant="secondary" onClick={closeModal}>Abbrechen</Button>
+                        </div>
+                    </form>
+                </Modal.Body>
             </Modal>
         </div>
     );

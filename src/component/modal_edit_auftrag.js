@@ -1,64 +1,81 @@
-import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
+import { Pen } from 'react-bootstrap-icons';
 
-function EditAuftrag() {
-    const [name, setName] = useState('');
-    const [liefertermin, setLiefertermin] = useState('');
-    const { id } = useParams();
-    const navigate = useNavigate();
+function ModalEditAuftrag({ auftragID, auftrag_Name, liefer_datum, onSave }) {
+    const [auftragName, setAuftragName] = useState('');
+    const [lieferdatum, setLieferdatum] = useState('');
+    const [modalIsOpen, setModalIsOpen] = useState(false);
 
     useEffect(() => {
-        axios.get(`http://localhost:8081/auftraege/${id}`)
-            .then(res => {
-                setName(res.data.auftrag_name);
-                setLiefertermin(res.data.auftrag_liefertermin);
-            })
-            .catch(err => console.log(err));
-    }, [id]);
+        setAuftragName(auftrag_Name);
+        setLieferdatum(liefer_datum);
+    }, [auftrag_Name, liefer_datum]);
 
-    function handleSubmit(event) {
-        event.preventDefault();
-        axios.put(`http://localhost:8081/update/${id}`, { auftrag_name: name, auftrag_liefertermin: liefertermin })
-            .then(res => {
-                console.log(res);
-                navigate('/');
-            })
-            .catch(err => console.log(err));
-    }
+    const openModal = () => {
+        setModalIsOpen(true);
+    };
+
+    const closeModal = () => {
+        setModalIsOpen(false);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            await axios.put(`http://192.168.1.5:8081/auftraege/update/${auftragID}`, { auftrag_name: auftragName, auftrag_liefertermin: lieferdatum });
+            onSave();
+            closeModal();
+        } catch (error) {
+            console.error('Fehler beim Speichern des Auftrags:', error);
+        }
+    };
 
     return (
-        <div className='d-flex vh-100 bg-primary justify-content-center align-items-center'>
-            <div className='w-50 bg-white rounded p-3'>
-                <form onSubmit={handleSubmit}>
-                    <h2>Update Student</h2>
-                    <div className='mb-2'>
-                        <label htmlFor="name">Name</label>
-                        <input
-                            type="text"
-                            id="name"
-                            placeholder='Enter Name'
-                            className='form-control'
-                            value={name}
-                            onChange={e => setName(e.target.value)}
-                        />
-                    </div>
-                    <div className='mb-2'>
-                        <label htmlFor="liefertermin">Liefertermin</label>
-                        <input
-                            type="text"
-                            id="liefertermin"
-                            placeholder='Enter Liefertermin'
-                            className='form-control'
-                            value={liefertermin}
-                            onChange={e => setLiefertermin(e.target.value)}
-                        />
-                    </div>
-                    <button className='btn btn-success'>Update</button>
-                </form>
-            </div>
+        <div>
+            <Button variant="outline-dark" onClick={openModal}><Pen /></Button>
+            <Modal
+                show={modalIsOpen}
+                onHide={closeModal}
+
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Neuen Auftrag erstellen</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <form onSubmit={handleSubmit}>
+                        <div className="mb-3">
+                            <label htmlFor="auftragName" className="form-label"><strong>Auftrag Name:</strong></label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="auftragName"
+                                value={auftragName}
+                                onChange={(e) => setAuftragName(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="auftragLiefertermin" className="form-label"><strong>Auftrag Liefertermin:</strong></label>
+                            <input
+                                type="datetime-local"
+                                className="form-control"
+                                id="lieferdatum"
+                                value={lieferdatum}
+                                onChange={(e) => setLieferdatum(e.target.value)}
+                            />
+                        </div>
+                        <div className="d-grid gap-2">
+                            <Button variant="primary" type="submit">Auftrag erstellen</Button>
+                            <Button variant="secondary" onClick={closeModal}>Abbrechen</Button>
+                        </div>
+                    </form>
+                </Modal.Body>
+            </Modal>
         </div>
     );
 }
 
-export default EditAuftrag;
+export default ModalEditAuftrag;
