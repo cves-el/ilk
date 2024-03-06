@@ -22,7 +22,7 @@ function Eingabe() {
     const [aufgabenStatus, setAufgabenStatus] = useState([]);
     const [collapsed, setCollapsed] = useState(false);
     const [color, setColor] = useState('#e5eb34');
-    const [onlineUsers, setOnlineUsers] = useState([]);
+    const [users, setUsers] = useState([]);
 
 
     // useCallback verwenden, um fetchAuftraege zu definieren
@@ -92,8 +92,10 @@ function Eingabe() {
         const fetchOnlineUsers = () => {
             fetch('http://192.168.1.5:8081/online-users')
                 .then(response => response.json())
-                .then(setOnlineUsers)
-                .catch(console.error);
+                .then(data => {
+                    setUsers(data);
+                })
+                .catch(error => console.error('Error:', error));
         };
 
         fetchOnlineUsers();
@@ -587,12 +589,16 @@ function Eingabe() {
 
                     {/* CHAT LISTE */}
                     <div style={{ width: '20vh', backgroundColor: '#292929' }}>
-                        <h2>Online Users</h2>
+                        <h2>Users</h2>
                         <ul>
-                            {onlineUsers.map(user => (
-                                <li key={user.id}>{user.name}</li>
+                            {users.map((user, index) => (
+                                <li key={index} style={{ color: user.isLoggedIn ? 'green' : 'grey' }}>
+                                    {user.name} - {user.isLoggedIn ? 'Online' : `Last online: ${user.lastLogin}`}
+                                    {console.log(user)}
+                                </li>
                             ))}
                         </ul>
+
                     </div>
 
 

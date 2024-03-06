@@ -1,44 +1,49 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Startseite() {
-
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userName, setUserName] = useState('');
 
     useEffect(() => {
-        const sessionToken = localStorage.getItem('sessionToken');
-        if (sessionToken) {
-            login(null, sessionToken);
+        const name = localStorage.getItem('userName');
+        if (name) {
+            setUserName(name);
+            setIsLoggedIn(true);
         }
     }, []);
 
-    const login = (name) => {
-        fetch('http://192.168.1.5:8081/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name }),
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.name) {
-                    alert(`Logged in as ${data.name}`);
-                    // If you decide to use sessionToken in the future:
-                    // localStorage.setItem('sessionToken', data.sessionToken);
-                } else {
-                    alert("Failed to log in. Please try again.");
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("Failed to log in. Please check the console for errors.");
-            });
-    };
-
     const handleLogin = () => {
         const name = prompt("Please enter your name:");
-        if (name) login(name);
+        if (name) {
+            fetch('http://192.168.1.5:8081/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name }),
+            })
+                .then(response => response.json())
+                .then(() => {
+                    localStorage.setItem('userName', name);
+                    setUserName(name);
+                    setIsLoggedIn(true);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    };
+
+    const handleLogout = () => {
+        fetch('http://192.168.1.5:8081/logout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: userName }),
+        })
+            .then(() => {
+                localStorage.removeItem('userName');
+                setIsLoggedIn(false);
+                setUserName('');
+            })
+            .catch(error => console.error('Error:', error));
     };
 
     return (
@@ -51,8 +56,11 @@ function Startseite() {
                 <Link to="/sortierung" className="btn btn-outline-dark btn-lg btn-block mb-3">Sortierung</Link>
                 <Link to="/beladung" className="btn btn-outline-dark btn-lg btn-block mb-3">Beladung</Link>
 
-                <button onClick={handleLogin} className="btn btn-success btn-lg btn-block">Login</button>
-
+                {isLoggedIn ? (
+                    <button onClick={handleLogout}>Logout</button>
+                ) : (
+                    <button onClick={handleLogin} className="btn btn-success btn-lg btn-block">Login</button>
+                )}
             </div>
         </div>
     );

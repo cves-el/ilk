@@ -134,54 +134,36 @@ app.delete('/aufgaben/delete/:ID', (req, res) => {
     });
 });
 
-// Login
+// Login endpoint
 app.post('/login', (req, res) => {
     const { name } = req.body;
     if (!name) {
-        return res.status(400).json({ message: "Name is required" });
+        return res.status(400).send("Name is required.");
     }
-
-    // Check if the user exists
-    const queryFindUser = "SELECT * FROM users WHERE name = ?";
-    db.query(queryFindUser, [name], (err, result) => {
-        if (err) return res.status(500).json({ error: err.message });
-
-        if (result.length > 0) {
-            // User exists, mark as online
-            const updateUser = "UPDATE users SET isLoggedIn = true WHERE name = ?";
-            db.query(updateUser, [name], (err, updateResult) => {
-                if (err) return res.status(500).json({ error: err.message });
-                return res.json({ name: name, message: "User logged in successfully" });
-            });
-        } else {
-            // New user, insert and mark as online
-            const insertUser = "INSERT INTO users (name, isLoggedIn) VALUES (?, true)";
-            db.query(insertUser, [name], (err, insertResult) => {
-                if (err) return res.status(500).json({ error: err.message });
-                return res.json({ name: name, message: "User created and logged in successfully" });
-            });
-        }
+    const query = "INSERT INTO users (name, isLoggedIn) VALUES (?, TRUE) ON DUPLICATE KEY UPDATE isLoggedIn = TRUE";
+    db.query(query, [name], (err, result) => {
+        if (err) return res.status(500).send(err.message);
+        res.json({ name });
     });
 });
 
-// Logout
+// Logout endpoint
 app.post('/logout', (req, res) => {
     const { name } = req.body;
-    if (!name) {
-        return res.status(400).json({ message: "Name is required for logout" });
-    }
-    const query = "UPDATE users SET isLoggedIn = false WHERE name = ?";
+    const query = "UPDATE users SET isLoggedIn = FALSE, lastOnline = NOW() WHERE name = ?";
     db.query(query, [name], (err, result) => {
-        if (err) return res.status(500).json({ error: err.message });
-        return res.json({ message: "User logged out successfully" });
+        if (err) return res.status(500).send(err.message);
+        res.send("Logged out successfully.");
     });
 });
+
 
 // Get online users
 app.get('/online-users', (req, res) => {
-    db.query("SELECT name FROM users WHERE isLoggedIn = true", (err, result) => {
-        if (err) return res.status(500).json({ error: "Error retrieving online users" });
-        else res.json(result);
+    const query = "SELECT * FROM users";
+    db.query(query, (err, results) => {
+        if (err) return res.status(500).send(err.message);
+        res.json(results);
     });
 });
 
