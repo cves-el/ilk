@@ -140,7 +140,7 @@ app.post('/login', (req, res) => {
     if (!name) {
         return res.status(400).send("Name is required.");
     }
-    const query = "INSERT INTO users (name, isLoggedIn) VALUES (?, TRUE) ON DUPLICATE KEY UPDATE isLoggedIn = TRUE";
+    const query = "INSERT INTO users (name, isLoggedIn) VALUES (?, 1) ON DUPLICATE KEY UPDATE isLoggedIn = 1";
     db.query(query, [name], (err, result) => {
         if (err) return res.status(500).send(err.message);
         res.json({ name });

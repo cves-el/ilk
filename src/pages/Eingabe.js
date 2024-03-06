@@ -23,6 +23,7 @@ function Eingabe() {
     const [collapsed, setCollapsed] = useState(false);
     const [color, setColor] = useState('#e5eb34');
     const [users, setUsers] = useState([]);
+    const [userName, setUserName] = useState('');
 
 
     // useCallback verwenden, um fetchAuftraege zu definieren
@@ -101,11 +102,33 @@ function Eingabe() {
         fetchOnlineUsers();
         const interval = setInterval(fetchOnlineUsers, 5000);
 
-        window.addEventListener('beforeunload', () => {
-            navigator.sendBeacon('http://192.168.1.5:8081/logout', JSON.stringify({ sessionToken: localStorage.getItem('sessionToken') }));
-        });
+        const name = localStorage.getItem('userName');
+        if (name) {
+            setUserName(name);
+            
+        }
 
         return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
+        const handleBeforeUnload = (event) => {
+            // Hier kannst du die Funktion ausführen, die beim Schließen der Seite ausgeführt werden soll
+            // Zum Beispiel: Speichern von Daten, Anzeigen einer Bestätigungsnachricht, etc.
+            alert("Die Seite wird geschlossen.");
+
+            // Damit der Standarddialog "Diese Seite sagt..." angezeigt wird, kommentiere die folgende Zeile aus:
+            // event.preventDefault();
+
+            // Du kannst hier auch einen Text zurückgeben, der im Dialog angezeigt wird, z.B.:
+            // return "Du hast ungespeicherte Änderungen. Bist du sicher, dass du die Seite verlassen möchtest?";
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
     }, []);
     // Funktion zum Laden der Aufgaben des ausgewählten Auftrags
     const fetchAufgaben = (auftragId) => {
